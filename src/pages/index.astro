@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import Hours from '../components/Hours.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site, whatsappUrl, routeUrl } from '../data/site';
+import { modalities } from '../data/modalities';
+import { count, weeklyTotal, weeklyHyrox, kindLabel } from '../data/schedule';
+import { faq } from '../data/faq';
+import { reviews } from '../data/reviews';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const perKind = (k: (typeof modalities)[number]['kind']) => count([k]);
+---
+<Base
+  title="CrossFit e HYROX no Tucuruvi | Centro de Treinamento ZN"
+  description="Box de CrossFit e HYROX na zona norte de São Paulo, no Tucuruvi. Aulas de 6h30 às 21h, Cross Kids, Ginásticos e L.P.O. Agende sua aula."
+  path="/"
+  schema={[faqSchema]}
+>
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1 id="h1" class="rise">Treino de verdade, com a família ZN.</h1>
+        <p class="lead rise">CrossFit e HYROX no Tucuruvi, zona norte de São Paulo. Aulas conduzidas por coaches, das 6h30 às 21h.</p>
+        <div class="btn-row rise">
+          <a class="btn btn-red" href={`tel:${site.phone.tel}`}>Agendar aula</a>
+          <a class="btn btn-ghost" href="/horarios">Ver horários</a>
+        </div>
+      </div>
+      <div class="dial-wrap">
+        <div class="dial">
+          <div class="dial-in" data-next>
+            <p class="dial-time" data-next-time>6h30</p>
+            <p class="dial-kind" data-next-kind>CrossFit</p>
+            <p class="dial-when" data-next-when>Próxima aula: a partir das 6h30</p>
+            <p class="dial-live" data-open="false">Funcionamento: veja abaixo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band on-navy" aria-labelledby="mods">
+    <div class="wrap">
+      <h2 id="mods">Cinco jeitos de treinar no ZN</h2>
+      <p class="lead" style="margin-top:20px">Do primeiro dia ao preparo para a prova: escolha a aula que combina com o seu momento.</p>
+    </div>
+    <div class="mods"><div class="mods-in">
+      {modalities.map((m) => (
+        <article class="mod" data-kind={m.kind} data-reveal>
+          <h3>{m.name}</h3>
+          <div class="mod-side">
+            <p>{m.text} <strong class="meta">{perKind(m.kind)} {perKind(m.kind) === 1 ? 'aula' : 'aulas'} por semana.</strong></p>
+            {m.href && <a class="more" href={m.href}>Conhecer {m.name}</a>}
+          </div>
+        </article>
+      ))}
+    </div></div>
+  </section>
+
+  <section class="band on-deep" aria-labelledby="numeros">
+    <div class="wrap">
+      <h2 id="numeros">A semana no ZN</h2>
+      <div class="stats">
+        <div class="stat" data-reveal><strong>{weeklyTotal}</strong><span>aulas por semana na grade</span></div>
+        <div class="stat" data-reveal><strong>{weeklyHyrox}</strong><span>aulas de HYROX por semana</span></div>
+        <div class="stat" data-reveal><strong>6h30</strong><span>primeira aula do dia</span></div>
+        <div class="stat" data-reveal><strong>21h</strong><span>última aula, de segunda a quinta</span></div>
+      </div>
+      <p class="note" style="margin-top:32px">Números calculados a partir da grade publicada. Confirme os horários pelo telefone antes de ir.</p>
+    </div>
+  </section>
+
+  <section class="band on-paper" aria-labelledby="novo">
+    <div class="wrap split">
+      <div class="prose">
+        <h2 id="novo">Nunca treinou? Comece no seu ritmo.</h2>
+        <p class="lead">Você não precisa estar em forma para chegar. O coach conduz a aula e adapta o treino ao seu nível, e a gente cuida do resto no caminho.</p>
+        <div class="btn-row"><a class="btn btn-red" href={`tel:${site.phone.tel}`}>Agendar aula experimental</a></div>
+      </div>
+      <ol class="steps" style="color:var(--ink)">
+        <li data-reveal><h3>Ligue{whatsappUrl ? ' ou chame no WhatsApp' : ''}</h3><small>Fale com a recepção e conte seu objetivo.</small></li>
+        <li data-reveal><h3>Escolha um horário</h3><small>Veja a grade completa e marque o que encaixa na sua rotina.</small></li>
+        <li data-reveal><h3>Venha conhecer o box</h3><small>Av. Nova Cantareira, 4066, no Tucuruvi.</small></li>
+      </ol>
+    </div>
+  </section>
+
+  {reviews.length > 0 && (
+    <section class="band on-navy" aria-labelledby="falam">
+      <div class="wrap">
+        <h2 id="falam">Quem treina fala</h2>
+        {reviews.map((r) => <blockquote><p>{r.quote}</p><footer>{r.author}</footer></blockquote>)}
+      </div>
+    </section>
+  )}
+
+  <section class="band on-deep" aria-labelledby="onde">
+    <div class="wrap split">
+      <div class="prose">
+        <h2 id="onde">Como chegar</h2>
+        <p class="where-addr">{site.address.street}<br />{site.address.district}, São Paulo</p>
+        <p class="lead">CEP {site.address.zip}. Fica na zona norte, no Tucuruvi.</p>
+        <div class="btn-row">
+          <a class="btn btn-red" href={routeUrl} rel="noopener noreferrer">Traçar rota no Maps</a>
+          <a class="btn btn-ghost" href={`tel:${site.phone.tel}`}>Ligar {site.phone.display}</a>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:14px">Horário de funcionamento</h3>
+        <Hours />
+        <p class="note">Em feriados o horário pode mudar. Confirme por telefone.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band on-paper" aria-labelledby="duvidas">
+    <div class="wrap split">
+      <div class="prose">
+        <h2 id="duvidas">Dúvidas frequentes</h2>
+        <p class="lead">Não achou o que procurava? Ligue para {site.phone.display} e fale com a recepção.</p>
+        <div class="btn-row"><a class="btn btn-red" href={`tel:${site.phone.tel}`}>Ligar agora</a></div>
+      </div>
+      <Faq />
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

@@ -1,0 +1,147 @@
+---
+import '../styles/global.css';
+import { site, fullAddress, whatsappUrl, routeUrl } from '../data/site';
+import { days, schedule, kindLabel } from '../data/schedule';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  schema?: Record<string, unknown>[];
+}
+const { title, description, path, schema = [] } = Astro.props;
+const canonical = new URL(path, site.url).toString().replace(/\/$/, '') || site.url;
+const og = new URL('/og.png', site.url).toString();
+
+const nav = [
+  { href: '/', label: 'Início' },
+  { href: '/crossfit', label: 'CrossFit' },
+  { href: '/hyrox', label: 'HYROX' },
+  { href: '/horarios', label: 'Horários' },
+  { href: '/contato', label: 'Contato' },
+];
+const current = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+
+const hoursSpec = [
+  { dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '06:30', closes: '22:00' },
+  { dayOfWeek: 'Friday', opens: '06:30', closes: '21:00' },
+  { dayOfWeek: 'Saturday', opens: '08:00', closes: '12:00' },
+].map((h) => ({ '@type': 'OpeningHoursSpecification', ...h }));
+
+const gym = {
+  '@context': 'https://schema.org',
+  '@type': 'ExerciseGym',
+  '@id': `${site.url}/#gym`,
+  name: site.name,
+  url: site.url,
+  telephone: site.phone.tel,
+  image: new URL('/logo-zn.png', site.url).toString(),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.city,
+    addressRegion: site.address.state,
+    postalCode: site.address.zip,
+    addressCountry: 'BR',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
+  openingHoursSpecification: hoursSpec,
+  sameAs: [site.instagram.url],
+};
+const liveData = {
+  days,
+  schedule,
+  labels: kindLabel,
+  hours: site.hours,
+};
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0e1440" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(gym)} />
+    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label={`${site.name}, página inicial`}>
+          <img src="/logo-zn.webp" alt="" width="48" height="48" />
+          <span>CT ZN</span>
+        </a>
+        <nav aria-label="Principal">
+          <ul class="nav-links">
+            {nav.map((n) => <li><a href={n.href} aria-current={current(n.href) ? 'page' : undefined}>{n.label}</a></li>)}
+          </ul>
+          <details class="menu">
+            <summary>Menu</summary>
+            <div class="menu-panel">
+              {nav.map((n) => <a href={n.href} aria-current={current(n.href) ? 'page' : undefined}>{n.label}</a>)}
+            </div>
+          </details>
+        </nav>
+        <a class="btn btn-red cta-top" href="/contato#agendar">Agendar aula</a>
+      </div>
+    </header>
+
+    <main id="conteudo"><slot /></main>
+
+    <footer class="foot on-deep" data-hide-dock>
+      <div class="wrap">
+        <div class="foot-grid">
+          <div>
+            <h3>{site.name}</h3>
+            <p>{site.address.street}<br />{site.address.district}, {site.address.city} – {site.address.state}<br />CEP {site.address.zip}</p>
+          </div>
+          <div>
+            <h3>Fale com a gente</h3>
+            <ul>
+              <li><a href={`tel:${site.phone.tel}`}>{site.phone.display}</a></li>
+              {whatsappUrl && <li><a href={whatsappUrl} rel="noopener noreferrer">WhatsApp</a></li>}
+              <li><a href={site.instagram.url} rel="noopener noreferrer">Instagram {site.instagram.handle}</a></li>
+              <li><a href={routeUrl} rel="noopener noreferrer">Como chegar</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Páginas</h3>
+            <ul>
+              {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+              <li><a href="/privacidade">Privacidade</a></li>
+            </ul>
+          </div>
+        </div>
+        <p class="mark" aria-hidden="true">CT ZN</p>
+        <p class="legal">© {new Date().getFullYear()} {site.name}. Treinos devem ser acompanhados por profissionais; consulte seu médico antes de iniciar atividade física. CrossFit e HYROX são marcas de seus respectivos titulares, citadas aqui apenas para descrever as modalidades.</p>
+      </div>
+    </footer>
+
+    <div class="dock" role="group" aria-label="Contato rápido">
+      <a class="btn btn-red" href={`tel:${site.phone.tel}`}>Ligar</a>
+      {whatsappUrl && <a class="btn btn-ghost" href={whatsappUrl} rel="noopener noreferrer">WhatsApp</a>}
+      <a class="btn btn-white" href={routeUrl} rel="noopener noreferrer">Rota</a>
+    </div>
+
+    <script type="application/json" id="zn-data" set:html={JSON.stringify(liveData)} />
+    <script>
+      import '../scripts/live';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+<Base title="Privacidade | Centro de Treinamento ZN" description="Como o site do Centro de Treinamento ZN trata seus dados: não coletamos dados pessoais nem usamos cookies de rastreamento." path="/privacidade">
+  <section class="band first on-deep" aria-labelledby="h1">
+    <div class="wrap prose">
+      <h1 id="h1">Privacidade</h1>
+      <p class="lead">Este site não coleta dados pessoais, não tem formulários e não usa cookies de rastreamento ou publicidade.</p>
+      <p>Quando você liga, chama no WhatsApp ou abre o Google Maps e o Instagram, o contato acontece nesses serviços e segue as políticas de cada um. O {site.name} usa seus dados de contato apenas para responder ao seu pedido de agendamento.</p>
+      <p>Dúvidas sobre dados pessoais (LGPD): ligue para {site.phone.display}.</p>
+    </div>
+  </section>
+</Base>

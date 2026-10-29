@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Schedule from '../components/Schedule.astro';
+import Hours from '../components/Hours.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site';
+---
+<Base
+  title="Horários das aulas | Centro de Treinamento ZN"
+  description="Grade completa de aulas de CrossFit, HYROX, Ginásticos, L.P.O e Cross Kids do Centro de Treinamento ZN, no Tucuruvi. Segunda a sábado."
+  path="/horarios"
+>
+  <section class="band first on-deep" aria-labelledby="h1" style="padding-bottom:var(--section)">
+    <div class="wrap">
+      <h1 id="h1">Horários das aulas</h1>
+      <p class="lead" style="margin-top:20px">Segunda a sábado. Filtre por modalidade e veja o dia de hoje em destaque.</p>
+      <Schedule filters />
+      <p class="note">Horários sujeitos a alteração e a feriados. Confirme pelo telefone {site.phone.display}.</p>
+    </div>
+  </section>
+  <section class="band on-navy" aria-labelledby="func">
+    <div class="wrap split">
+      <h2 id="func">Horário de funcionamento</h2>
+      <Hours />
+    </div>
+  </section>
+  <CtaBand title="Escolha seu horário" />
+</Base>

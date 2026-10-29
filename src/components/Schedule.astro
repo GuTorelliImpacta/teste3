@@ -1,0 +1,27 @@
+---
+import { days, schedule, kindLabel, type ClassKind } from '../data/schedule';
+interface Props { kinds?: ClassKind[]; filters?: boolean }
+const { kinds, filters = false } = Astro.props;
+const present = [...new Set(Object.values(schedule).flat().map((s) => s.kind))] as ClassKind[];
+---
+{filters && (
+  <div class="filters" role="group" aria-label="Filtrar por modalidade">
+    <button class="chip" type="button" data-filter="all" aria-pressed="true">Todas</button>
+    {present.map((k) => <button class="chip" type="button" data-filter={k} aria-pressed="false">{kindLabel[k]}</button>)}
+  </div>
+)}
+<div class="grid-days">
+  {days.map((d) => {
+    const list = schedule[d.id].filter((s) => !kinds || kinds.includes(s.kind));
+    return (
+      <section class="day" data-reveal data-dow={d.dow} aria-labelledby={`d-${d.id}`}>
+        <div class="day-head"><h3 id={`d-${d.id}`}>{d.label}</h3><span class="today" data-today-tag hidden>Hoje</span></div>
+        <ul>
+          {list.map((s) => (
+            <li class="slot" data-kind={s.kind}><b>{s.t.replace(':', 'h')}</b><span>{kindLabel[s.kind]}</span></li>
+          ))}
+        </ul>
+      </section>
+    );
+  })}
+</div>
