@@ -1,0 +1,20 @@
+---
+import { site, whatsappUrl } from '../data/site';
+interface Props { title?: string }
+const { title = 'Vem treinar com a gente' } = Astro.props;
+---
+<section class="band on-red" aria-labelledby="cta-title" data-hide-dock>
+  <div class="wrap cta-split">
+    <div class="prose">
+      <h2 id="cta-title">{title}</h2>
+      <p class="lead">Agende sua aula experimental por telefone{whatsappUrl ? ' ou WhatsApp' : ''}. Atendimento de segunda a sábado.</p>
+    </div>
+    <div class="prose">
+      <a class="cta-phone" href={`tel:${site.phone.tel}`}>{site.phone.display}</a>
+      <div class="btn-row">
+        <a class="btn btn-white" href={`tel:${site.phone.tel}`}>Ligar agora</a>
+        {whatsappUrl && <a class="btn btn-ghost" href={whatsappUrl} rel="noopener noreferrer">Chamar no WhatsApp</a>}
+      </div>
+    </div>
+  </div>
+</section>
