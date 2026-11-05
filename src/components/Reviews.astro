@@ -1,0 +1,17 @@
+---
+// "Quem treina aqui": só renderiza com depoimentos reais preenchidos em src/content/site.ts (máx. 3)
+import { content } from '../content/site';
+const list = content.depoimentos.slice(0, 3);
+---
+{list.length > 0 && (
+  <section class="band tight on-paper" aria-labelledby="treina">
+    <div class="wrap">
+      <h2 id="treina">Quem treina aqui</h2>
+      <ul class="snap">
+        {list.map((r) => (
+          <li class="quote"><blockquote><p>{r.texto}</p><footer>{r.autor}</footer></blockquote></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

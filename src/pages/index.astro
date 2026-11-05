@@ -1,0 +1,131 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Photo from '../components/Photo.astro';
+import Faq from '../components/Faq.astro';
+import Hours from '../components/Hours.astro';
+import Coaches from '../components/Coaches.astro';
+import Reviews from '../components/Reviews.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Cta from '../components/Cta.astro';
+import { site, routeUrl, channelText } from '../data/site';
+import { content } from '../content/site';
+import { modalities } from '../data/modalities';
+import { count, weeklyTotal, weeklyHyrox } from '../data/schedule';
+import { faq } from '../data/faq';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const perKind = (k: (typeof modalities)[number]['kind']) => count([k]);
+const weekly = (k: (typeof modalities)[number]['kind']) => `${perKind(k)} ${perKind(k) === 1 ? 'aula' : 'aulas'} por semana`;
+const main = modalities.filter((m) => m.featured);
+const sub = modalities.filter((m) => !m.featured);
+const strip = content.fotos.faixa.filter((f) => f.src).slice(0, 3);
+---
+<Base
+  title="CrossFit e HYROX no Tucuruvi | Centro de Treinamento ZN"
+  description="Box de CrossFit e HYROX na zona norte de São Paulo, no Tucuruvi. Aulas de 6h30 às 21h, Cross Kids, Ginásticos e L.P.O. Agende sua aula."
+  path="/"
+  schema={[faqSchema]}
+>
+  <Hero
+    variant="home"
+    title="Treino de verdade, com a família ZN."
+    lead="CrossFit e HYROX no Tucuruvi, zona norte de São Paulo. Aulas conduzidas por coaches, das 6h30 às 21h."
+    photo={content.fotos.hero}
+    secondary={{ href: '/horarios', label: 'Ver horários' }}
+  />
+
+  <section class="band on-navy" aria-labelledby="mods">
+    <div class="wrap">
+      <h2 id="mods">Cinco jeitos de treinar no ZN</h2>
+      <div class="mods">
+        <div class="mods-main">
+          {main.map((m) => (
+            <article class="mod" data-kind={m.kind}>
+              <h3>{m.name}</h3>
+              <p>{m.short}</p>
+              <p class="meta">{weekly(m.kind)}</p>
+              {m.href && <a class="more" href={m.href}>Conhecer {m.name}</a>}
+            </article>
+          ))}
+        </div>
+        <div class="mods-sub">
+          {sub.map((m) => (
+            <article class="mod sub" data-kind={m.kind}>
+              <h3>{m.name}</h3>
+              <p class="desc">{m.short}</p>
+              <p class="meta">{weekly(m.kind)}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {strip.length > 0 && (
+    <section class="band tight on-deep" aria-label="Fotos do treino">
+      <div class="wrap strip">
+        {strip.map((f) => <Photo src={f.src} alt={f.alt} width={800} height={600} />)}
+      </div>
+    </section>
+  )}
+
+  <section class="band tight on-deep" aria-labelledby="numeros">
+    <div class="wrap">
+      <h2 id="numeros">A semana no ZN</h2>
+      <div class="stats">
+        <div class="stat"><strong>{weeklyTotal}</strong><span>aulas por semana na grade</span></div>
+        <div class="stat"><strong>{weeklyHyrox}</strong><span>aulas de HYROX por semana</span></div>
+        <div class="stat"><strong>6h30</strong><span>primeira aula do dia</span></div>
+        <div class="stat"><strong>21h</strong><span>última aula, de segunda a quinta</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band on-paper" aria-labelledby="novo">
+    <div class="wrap split">
+      <div class="prose">
+        <h2 id="novo">Nunca treinou? Comece no seu ritmo.</h2>
+        <p class="lead">Você não precisa estar em forma para chegar. O coach conduz a aula e adapta o treino ao seu nível.</p>
+        <div class="btn-row"><Cta /></div>
+      </div>
+      <ol class="steps">
+        <li><h3>Chame a recepção {channelText}</h3><small>Conte seu objetivo e o horário que prefere.</small></li>
+        <li><h3>Escolha um horário</h3><small>Veja a grade completa e marque o que encaixa na sua rotina.</small></li>
+        <li><h3>Venha conhecer o box</h3><small>Av. Nova Cantareira, 4066, no Tucuruvi.</small></li>
+      </ol>
+    </div>
+  </section>
+
+  <Coaches />
+  <Reviews />
+
+  <section class="band on-deep" aria-labelledby="onde">
+    <div class="wrap split">
+      <div class="prose">
+        <h2 id="onde">Como chegar</h2>
+        <p class="where-addr">{site.address.street}<br />{site.address.district}, São Paulo</p>
+        <p class="lead">CEP {site.address.zip}, na zona norte.</p>
+        <div class="btn-row"><a class="btn btn-red" href={routeUrl} rel="noopener noreferrer">Traçar rota no Maps</a></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:12px">Horário de funcionamento</h3>
+        <Hours />
+        <p class="note">Em feriados o horário pode mudar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band on-paper" aria-labelledby="duvidas">
+    <div class="wrap">
+      <h2 id="duvidas">Dúvidas frequentes</h2>
+      <Faq />
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

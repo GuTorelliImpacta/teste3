@@ -1,0 +1,12 @@
+---
+import { site } from '../data/site';
+const f = (t: string | null) => (t ? t.replace(':', 'h').replace('h00', 'h') : null);
+---
+<dl class="hours">
+  {site.hours.map((h) => (
+    <div data-dow={h.days[0]} data-days={h.days.join(',')}>
+      <dt>{h.label}</dt>
+      <dd>{h.open ? `${f(h.open)} às ${f(h.close)}` : 'Fechado'}</dd>
+    </div>
+  ))}
+</dl>

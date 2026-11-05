@@ -1,0 +1,8 @@
+---
+// CTA único do site: "Agendar aula experimental". Destino: WhatsApp (se preenchido) ou ligação.
+import { ctaFor } from '../data/site';
+interface Props { class?: string; tone?: 'red' | 'white' | 'ghost' }
+const { class: cls, tone = 'red' } = Astro.props;
+const { href, external } = ctaFor(Astro.url.pathname);
+---
+<a class:list={['btn', `btn-${tone}`, cls]} href={href} rel={external ? 'noopener noreferrer' : undefined}>Agendar aula experimental</a>

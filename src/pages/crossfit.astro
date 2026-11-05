@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import Schedule from '../components/Schedule.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Hero from '../components/Hero.astro';
+import { content } from '../content/site';
+import { site } from '../data/site';
+import { modalities } from '../data/modalities';
+
+const crumbs = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'CrossFit', item: `${site.url}/crossfit` },
+  ],
+};
+const extras = modalities.filter((m) => ['ginasticos', 'lpo', 'cross-kids'].includes(m.kind));
+---
+<Base
+  title="CrossFit no Tucuruvi, zona norte SP | CT ZN"
+  description="Aulas de CrossFit no Tucuruvi, zona norte de São Paulo, com coach, de segunda a sábado. Conheça o treino e veja os horários do CT ZN."
+  path="/crossfit"
+  schema={[crumbs]}
+>
+  <Hero
+    title="CrossFit no Tucuruvi, na zona norte."
+    lead="Treino em grupo, conduzido por coach, com movimentos variados e intensidade ajustada ao seu nível."
+    photo={content.fotos.crossfit}
+    kinds={['crossfit']}
+    secondary={{ href: '#grade', label: 'Ver horários de CrossFit' }}
+  />
+
+  <section class="band on-paper" aria-labelledby="oque">
+    <div class="wrap split">
+      <h2 id="oque">O que é o treino de CrossFit</h2>
+      <div class="prose">
+        <p class="lead">É um treino funcional feito em grupo: levantamento de peso, ginástica e condicionamento combinados em aulas que mudam todo dia.</p>
+        <p>Cada aula tem aquecimento, parte técnica e o treino do dia. O coach acompanha a turma e adapta cargas e movimentos, por isso quem está começando treina ao lado de quem já tem experiência.</p>
+        <ul class="facts">
+          <li><strong>Para iniciantes</strong>Peça uma aula experimental e conte seu momento ao coach.</li>
+          <li><strong>Para quem já treina</strong>Aulas de manhã, tarde e noite, de segunda a sábado.</li>
+          <li><strong>Em turma</strong>O treino em grupo mantém o ritmo e a constância.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band on-navy" aria-labelledby="comp">
+    <div class="wrap">
+      <h2 id="comp">Ginásticos, L.P.O e Cross Kids</h2>
+    </div>
+    <div class="wrap mods">
+      <div class="mods-sub">
+        {extras.map((m) => (
+          <article class="mod sub" data-kind={m.kind}><h3>{m.name}</h3><p class="desc">{m.text}</p></article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band on-deep" id="grade" aria-labelledby="grade-t">
+    <div class="wrap">
+      <h2 id="grade-t">Horários de CrossFit</h2>
+      <Schedule kinds={['crossfit', 'ginasticos', 'lpo', 'cross-kids']} />
+      <p class="note">Horários sujeitos a alteração. Confirme com a recepção.</p>
+    </div>
+  </section>
+  <CtaBand title="Agende sua primeira aula" />
+</Base>

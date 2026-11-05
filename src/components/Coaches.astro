@@ -1,0 +1,22 @@
+---
+// "Quem vai te treinar": só renderiza com coaches preenchidos em src/content/site.ts
+import Photo from './Photo.astro';
+import { content } from '../content/site';
+const list = content.coaches;
+---
+{list.length > 0 && (
+  <section class="band tight on-navy" aria-labelledby="coaches">
+    <div class="wrap">
+      <h2 id="coaches">Quem vai te treinar</h2>
+      <ul class="snap">
+        {list.map((c) => (
+          <li class="person">
+            <Photo src={c.foto?.src} alt={c.foto?.alt} width={600} height={600} />
+            <h3>{c.nome}</h3>
+            <p>{c.especialidade}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

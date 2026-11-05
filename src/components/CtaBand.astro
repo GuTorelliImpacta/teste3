@@ -1,0 +1,18 @@
+---
+import Cta from './Cta.astro';
+import { site, channelText } from '../data/site';
+interface Props { title?: string }
+const { title = 'Vem treinar com a gente' } = Astro.props;
+---
+<section class="band on-red" aria-labelledby="cta-title" data-hide-dock>
+  <div class="wrap cta-split">
+    <div class="prose">
+      <h2 id="cta-title">{title}</h2>
+      <p class="lead">Agende sua aula experimental {channelText}. Atendimento de segunda a sábado.</p>
+    </div>
+    <div class="prose">
+      <a class="cta-phone" href={`tel:${site.phone.tel}`} aria-label={`Ligar para ${site.phone.display}`}>{site.phone.display}</a>
+      <div class="btn-row"><Cta tone="white" /></div>
+    </div>
+  </div>
+</section>
