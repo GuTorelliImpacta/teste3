@@ -1,0 +1,18 @@
+---
+// Widget "próxima aula": calculado no navegador (src/scripts/live.ts). Sem JS, mostra a primeira aula da semana.
+import { schedule, kindLabel, type ClassKind } from '../data/schedule';
+interface Props { kinds?: ClassKind[] }
+const { kinds } = Astro.props;
+const first = schedule.seg.find((s) => !kinds || kinds.includes(s.kind)) ?? Object.values(schedule).flat().find((s) => !kinds || kinds.includes(s.kind))!;
+const fmt = (t: string) => (t.endsWith(':00') ? `${Number(t.slice(0, 2))}h` : `${Number(t.slice(0, 2))}h${t.slice(3)}`);
+---
+<div class="nc" data-next data-kinds={kinds ? kinds.join(',') : undefined}>
+  <div class="nc-in">
+    <p class="nc-time" data-next-time>{fmt(first.t)}</p>
+    <div class="nc-info">
+      <p class="nc-kind" data-next-kind>{kindLabel[first.kind]}</p>
+      <p class="nc-when" data-next-when>Próxima aula: segunda-feira</p>
+      <p class="nc-live" data-open="false">Veja o horário de funcionamento</p>
+    </div>
+  </div>
+</div>

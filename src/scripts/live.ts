@@ -21,14 +21,14 @@ const spNow = () => {
 const toMin = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
 const fmt = (t: string) => (t.endsWith(':00') ? `${Number(t.slice(0, 2))}h` : `${Number(t.slice(0, 2))}h${t.slice(3)}`);
 
-function nextClass() {
+function nextClass(kinds: string[] | null) {
   if (!data) return;
   const now = spNow();
   for (let add = 0; add < 8; add++) {
     const dow = (now.dow + add) % 7;
     const day = data.days.find((d) => d.dow === dow);
     if (!day) continue;
-    const slot = data.schedule[day.id].find((s) => add > 0 || toMin(s.t) > now.min);
+    const slot = data.schedule[day.id].find((s) => (!kinds || kinds.includes(s.kind)) && (add > 0 || toMin(s.t) > now.min));
     if (slot) return { add, day, slot, diff: add * 1440 + toMin(slot.t) - now.min };
   }
 }
@@ -41,24 +41,26 @@ function openNow() {
 }
 
 function render() {
-  const box = document.querySelector<HTMLElement>('[data-next]');
-  const n = nextClass();
-  if (box && n && data) {
-    const when =
-      n.diff < 60 ? `começa em ${n.diff} min`
-      : n.add === 0 ? `hoje, em ${Math.floor(n.diff / 60)}h${n.diff % 60 ? (n.diff % 60 < 10 ? '0' : '') + (n.diff % 60) : ''}`
-      : n.add === 1 ? 'amanhã'
-      : n.day.label.toLowerCase();
-    box.querySelector('[data-next-time]')!.textContent = fmt(n.slot.t);
-    box.querySelector('[data-next-kind]')!.textContent = data.labels[n.slot.kind];
-    box.querySelector('[data-next-when]')!.textContent = `Próxima aula: ${when}`;
-  }
-  const live = document.querySelector<HTMLElement>('[data-open]');
-  if (live) {
-    const open = openNow();
-    live.dataset.open = String(open);
-    live.textContent = open ? 'Aberto agora' : 'Fechado agora';
-  }
+  const open = openNow();
+  document.querySelectorAll<HTMLElement>('[data-next]').forEach((box) => {
+    const n = nextClass(box.dataset.kinds ? box.dataset.kinds.split(',') : null);
+    if (n && data) {
+      const mins = n.diff % 60;
+      const when =
+        n.diff < 60 ? `começa em ${n.diff} min`
+        : n.add === 0 ? `hoje, em ${Math.floor(n.diff / 60)}h${mins ? (mins < 10 ? '0' : '') + mins : ''}`
+        : n.add === 1 ? 'amanhã'
+        : n.day.label.toLowerCase();
+      box.querySelector('[data-next-time]')!.textContent = fmt(n.slot.t);
+      box.querySelector('[data-next-kind]')!.textContent = data.labels[n.slot.kind];
+      box.querySelector('[data-next-when]')!.textContent = `Próxima aula: ${when}`;
+    }
+    const live = box.querySelector<HTMLElement>('[data-open]');
+    if (live) {
+      live.dataset.open = String(open);
+      live.textContent = open ? 'Aberto agora' : 'Fechado agora';
+    }
+  });
 }
 
 function markToday() {
@@ -69,6 +71,34 @@ function markToday() {
       node.dataset.today = 'true';
       node.querySelector('[data-today-tag]')?.removeAttribute('hidden');
     }
+  });
+}
+
+function tabs() {
+  const root = document.querySelector<HTMLElement>('[data-sched]');
+  if (!root) return;
+  const tabEls = [...root.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+  const panels = tabEls.map((t) => document.getElementById(t.getAttribute('aria-controls')!)!);
+  root.classList.add('is-tabs');
+  document.documentElement.classList.add('has-tabs');
+  const select = (i: number, focus = false) => {
+    tabEls.forEach((t, k) => {
+      t.setAttribute('aria-selected', String(k === i));
+      t.tabIndex = k === i ? 0 : -1;
+      panels[k].hidden = k !== i;
+    });
+    if (focus) tabEls[i].focus();
+  };
+  const { dow } = spNow();
+  const start = tabEls.findIndex((t) => Number(t.dataset.dow) === dow);
+  select(start >= 0 ? start : 0);
+  tabEls.forEach((t, i) => {
+    t.addEventListener('click', () => select(i));
+    t.addEventListener('keydown', (e) => {
+      const last = tabEls.length - 1;
+      const to = e.key === 'ArrowRight' ? (i === last ? 0 : i + 1) : e.key === 'ArrowLeft' ? (i === 0 ? last : i - 1) : e.key === 'Home' ? 0 : e.key === 'End' ? last : -1;
+      if (to >= 0) { e.preventDefault(); select(to, true); }
+    });
   });
 }
 
@@ -112,5 +142,6 @@ render();
 reveal();
 dock();
 markToday();
+tabs();
 filters();
 setInterval(render, 30000);

@@ -1,7 +1,8 @@
 ---
 import '../styles/global.css';
-import { site, fullAddress, whatsappUrl, routeUrl } from '../data/site';
+import { site, whatsappUrl, routeUrl } from '../data/site';
 import { days, schedule, kindLabel } from '../data/schedule';
+import Cta from '../components/Cta.astro';
 
 interface Props {
   title: string;
@@ -98,7 +99,7 @@ const liveData = {
             </div>
           </details>
         </nav>
-        <a class="btn btn-red cta-top" href="/contato#agendar">Agendar aula</a>
+        <Cta class="cta-top" />
       </div>
     </header>
 
@@ -129,13 +130,12 @@ const liveData = {
           </div>
         </div>
         <p class="mark" aria-hidden="true">CT ZN</p>
-        <p class="legal">© {new Date().getFullYear()} {site.name}. Treinos devem ser acompanhados por profissionais; consulte seu médico antes de iniciar atividade física. CrossFit e HYROX são marcas de seus respectivos titulares, citadas aqui apenas para descrever as modalidades.</p>
+        <p class="legal">© {new Date().getFullYear()} {site.name}. Consulte seu médico antes de iniciar atividade física. CrossFit e HYROX são marcas de seus titulares, citadas apenas para descrever as modalidades.</p>
       </div>
     </footer>
 
     <div class="dock" role="group" aria-label="Contato rápido">
-      <a class="btn btn-red" href={`tel:${site.phone.tel}`}>Ligar</a>
-      {whatsappUrl && <a class="btn btn-ghost" href={whatsappUrl} rel="noopener noreferrer">WhatsApp</a>}
+      <Cta />
       <a class="btn btn-white" href={routeUrl} rel="noopener noreferrer">Rota</a>
     </div>
 

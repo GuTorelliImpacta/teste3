@@ -1,10 +1,9 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-
-const site = process.env.PUBLIC_SITE_URL || 'https://www.ctzn.com.br';
+import { SITE_URL } from './src/content/site';
 
 export default defineConfig({
-  site,
+  site: SITE_URL,
   output: 'static',
   trailingSlash: 'never',
   build: { format: 'file', inlineStylesheets: 'never' },

@@ -5,11 +5,11 @@ export const faq = [
   },
   {
     q: 'Como agendo uma aula experimental?',
-    a: 'Ligue para (11) 3567-4884 ou chame no WhatsApp quando o botão estiver disponível. Informe o dia e o horário que prefere na grade de aulas.',
+    a: 'Toque em “Agendar aula experimental” e informe o dia e o horário que prefere na grade de aulas. A recepção confirma com você.',
   },
   {
     q: 'Qual é o horário de funcionamento?',
-    a: 'Segunda a quinta das 6h30 às 22h, sexta das 6h30 às 21h e sábado das 8h às 12h. Domingo fechado. Em feriados o horário pode mudar: confirme por telefone.',
+    a: 'Segunda a quinta das 6h30 às 22h, sexta das 6h30 às 21h e sábado das 8h às 12h. Domingo fechado. Em feriados o horário pode mudar: confirme com a recepção.',
   },
   {
     q: 'O que é HYROX?',

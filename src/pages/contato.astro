@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
 import Hours from '../components/Hours.astro';
-import { site, whatsappUrl, routeUrl, mapsUrl } from '../data/site';
+import Cta from '../components/Cta.astro';
+import { site, routeUrl, mapsUrl, channelText } from '../data/site';
 import { faq } from '../data/faq';
 
 const faqSchema = {
@@ -29,10 +30,10 @@ const crumbs = {
     <div class="wrap split">
       <div class="prose">
         <h1 id="h1">Agende sua aula</h1>
-        <p class="lead">Ligue{whatsappUrl ? ' ou chame no WhatsApp' : ''}, diga o dia e o horário que prefere e a recepção confirma para você.</p>
+        <p class="lead">Fale com a recepção {channelText}, diga o dia e o horário que prefere e a recepção confirma para você.</p>
         <div class="btn-row">
-          <a class="btn btn-red" href={`tel:${site.phone.tel}`}>Ligar {site.phone.display}</a>
-          {whatsappUrl && <a class="btn btn-ghost" href={whatsappUrl} rel="noopener noreferrer">Chamar no WhatsApp</a>}
+          <Cta />
+          <a class="btn btn-ghost" href={`tel:${site.phone.tel}`}>Ligar {site.phone.display}</a>
           <a class="btn btn-white" href={site.instagram.url} rel="noopener noreferrer">Instagram {site.instagram.handle}</a>
         </div>
       </div>

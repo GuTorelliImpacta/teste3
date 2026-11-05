@@ -1,4 +1,5 @@
 ---
+// Grade de horários. Com JS: abas por dia (hoje selecionado). Sem JS: todos os dias aparecem em sequência.
 import { days, schedule, kindLabel, type ClassKind } from '../data/schedule';
 interface Props { kinds?: ClassKind[]; filters?: boolean }
 const { kinds, filters = false } = Astro.props;
@@ -10,13 +11,20 @@ const present = [...new Set(Object.values(schedule).flat().map((s) => s.kind))] 
     {present.map((k) => <button class="chip" type="button" data-filter={k} aria-pressed="false">{kindLabel[k]}</button>)}
   </div>
 )}
-<div class="grid-days">
+<div class="sched" data-sched>
+  <div class="tablist" role="tablist" aria-label="Dia da semana">
+    {days.map((d) => (
+      <button class="tab" role="tab" type="button" id={`tab-${d.id}`} aria-controls={`panel-${d.id}`} aria-selected="false" tabindex="-1" data-dow={d.dow}>
+        {d.short}<span class="tab-today" data-today-tag hidden><span class="sr-only"> (hoje)</span></span>
+      </button>
+    ))}
+  </div>
   {days.map((d) => {
     const list = schedule[d.id].filter((s) => !kinds || kinds.includes(s.kind));
     return (
-      <section class="day" data-reveal data-dow={d.dow} aria-labelledby={`d-${d.id}`}>
+      <section class="day-panel" id={`panel-${d.id}`} role="tabpanel" aria-labelledby={`d-${d.id}`} data-dow={d.dow}>
         <div class="day-head"><h3 id={`d-${d.id}`}>{d.label}</h3><span class="today" data-today-tag hidden>Hoje</span></div>
-        <ul>
+        <ul class="slots">
           {list.map((s) => (
             <li class="slot" data-kind={s.kind}><b>{s.t.replace(':', 'h')}</b><span>{kindLabel[s.kind]}</span></li>
           ))}
